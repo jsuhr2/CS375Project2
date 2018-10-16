@@ -7,11 +7,11 @@ $(P).o: $(P).cpp
 	g++ $(CFLAGS) -c $(P).cpp -o $(P).o
 
 $(P): $(P).o
-	g++ $(CFLAGS) $(P).o -o $(P)
+	g++ $(CFLAGS) $(P).o -o submission
 
 run: all
-	./$(P) input.txt output.txt
+	./submission input.txt output.txt
 
 clean:
 	rm $(P).o
-	rm $(P)
+	rm submission

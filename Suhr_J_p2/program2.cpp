@@ -11,8 +11,12 @@ class Node{
 	public:
 		int id;
 		int points;
+		Node();
 		Node(int i, int p);
 };
+
+Node::Node(){
+}
 
 Node::Node(int i, int p){
 	id = i;
@@ -33,18 +37,25 @@ class Heap{
 		void crownWinner();
 		bool nodeExists(int);
 		void print();
+		bool isLeaf(int);
 };
 
 Heap::Heap(){
 }
 
+bool Heap::isLeaf(int i){
+	if(((2*i)+1) > arr.size())
+		return true;
+	return false;
+}
+
 void Heap::siftdown(int i){
 	if((i < 0) || (i >= arr.size()))
 		return;
-	while((2*i + 1) < arr.size()){
+	while(!isLeaf(i)){
 		int left = 2*i + 1;
 		int right = 2*i + 2;
-		if(right >= arr.size() || arr.at(left).points <= arr.at(right).points){
+		if(right >= arr.size() || arr.at(left).points < arr.at(right).points){
 			if(arr.at(i).points <= arr.at(left).points){
 				return;
 			}
@@ -59,12 +70,26 @@ void Heap::siftdown(int i){
 			i = right;
 		}
 	}
+
+/*
+	while(!isLeaf(i)){
+		int swapNode = ((2*i)+1);
+		if((swapNode+1 < arr.size()-1) && (arr.at(swapNode).points > arr.at(swapNode+1).points))
+			swapNode++;
+		if(arr.at(i).points > arr.at(swapNode).points)
+			return;
+		iter_swap(arr.begin()+i, arr.begin()+swapNode);
+		i = swapNode;
+	}
+*/
 }
 
 void Heap::heapify(){
-	for(int i = (arr.size() - 2)/2; i >= 0; i--){
+
+	for(int i = (arr.size()-2)/2; i >= 0; i--){
 		siftdown(i);
 	}
+
 }
 
 void Heap::addNode(Node newNode){
@@ -126,8 +151,10 @@ int main(int argc, char** argv){
 
 	input >> size;
 
-	while(!input.eof()){
+	while(true){
 		input >> command;
+		if(input.eof())
+			break;
 		if(!(command.compare("insertContestant"))){
 			input >> in1;
 			input >> in2;
@@ -152,33 +179,145 @@ int main(int argc, char** argv){
 				output << "Contestant <" << in1 << "> is already in the extended heap: cannot insert." << endl;
 		}
 		else if(!(command.compare("findContestant"))){
+			int temp;
+			input >> in1;
 
+			output << command << " " << in1 << endl;
+
+			in1.erase(remove(in1.begin(), in1.end(), '<'), in1.end());
+			in1.erase(remove(in1.begin(), in1.end(), '>'), in1.end());
+			
+			contestantId = atoi(in1.c_str());
+		
+			if(heap.nodeExists(contestantId)){
+				for(auto i = heap.arr.begin(); i != heap.arr.end(); i++){
+					if((*i).id == contestantId){
+						temp = (*i).points;
+					}
+				}
+				output << "Contestant <" << contestantId << "> is in the extended heap with score <" << temp << ">." << endl;
+			}else
+				output << "Contestant <" << contestantId << "> is not in the extended heap." << endl;
 		}
 		else if(!(command.compare("eliminateWeakest"))){
-
+			output << command << endl;
+			if(!(heap.empty())){
+				Node n = heap.removeHead();
+				output << "Contestant <" << n.id << "> with current lowest score <" << n.points << "> eliminated." << endl;
+			}else
+				output << "No contestant can be eliminated since the extended heap is empty." << endl;
 		}
 		else if(!(command.compare("earnPoints"))){
+			int temp;
+			input >> in1;
+			input >> in2;
 
+			output << command << " " << in1 << " " << in2 << endl;
+
+			in1.erase(remove(in1.begin(), in1.end(), '<'), in1.end());
+			in1.erase(remove(in1.begin(), in1.end(), '>'), in1.end());
+			in2.erase(remove(in2.begin(), in2.end(), '<'), in2.end());
+			in2.erase(remove(in2.begin(), in2.end(), '>'), in2.end());
+			
+			contestantId = atoi(in1.c_str());
+			score = atoi(in2.c_str());
+			if(heap.nodeExists(contestantId)){
+				for(auto i = heap.arr.begin(); i != heap.arr.end(); i++){
+					if((*i).id == contestantId){
+						(*i).points += score;
+						temp = (*i).points;
+					}
+				}
+				output << "Contestant <" << contestantId << ">'s score increased by <" << score << "> points to <" << temp << ">." << endl;
+			}else
+				output << "Contestant <" << contestantId << "> is not in the extended heap." << endl;
 		}
 		else if(!(command.compare("losePoints"))){
+			int temp;
+			input >> in1;
+			input >> in2;
 
+			output << command << " " << in1 << " " << in2 << endl;
+
+			in1.erase(remove(in1.begin(), in1.end(), '<'), in1.end());
+			in1.erase(remove(in1.begin(), in1.end(), '>'), in1.end());
+			in2.erase(remove(in2.begin(), in2.end(), '<'), in2.end());
+			in2.erase(remove(in2.begin(), in2.end(), '>'), in2.end());
+			
+			contestantId = atoi(in1.c_str());
+			score = atoi(in2.c_str());
+			if(heap.nodeExists(contestantId)){
+				for(auto i = heap.arr.begin(); i != heap.arr.end(); i++){
+					if((*i).id == contestantId){
+						(*i).points -= score;
+						temp = (*i).points;
+					}
+				}
+				output << "Contestant <" << contestantId << ">'s score decreased by <" << score << "> points to <" << temp << ">." << endl;
+			}else
+				output << "Contestant <" << contestantId << "> is not in the extended heap." << endl;
 		}
 		else if(!(command.compare("showContestants"))){
+			output << command << endl;
 			heap.print();
 		}
 		else if(!(command.compare("showHandles"))){
-
+			output << command << endl;
+			for(int j = 1; j <= size; j++){
+				if(heap.nodeExists(j)){	
+					int pos = 1;
+					int temp;
+					for(auto i : heap.arr){
+						if(i.id == j)
+							temp = pos;
+						pos++;
+					}
+					output << "Contestant <" << j << "> stored in extended heap location <" << temp << ">." << endl;
+				}else
+					output << "There is no Contestant <" << j << "> in the extnded heap: handle[<" << j << ">] = -1." << endl;
+			}
 		}
 		else if(!(command.compare("showLocation"))){
+			input >> in1;
 
+			output << command << " " << in1 << endl;
+
+			in1.erase(remove(in1.begin(), in1.end(), '<'), in1.end());
+			in1.erase(remove(in1.begin(), in1.end(), '>'), in1.end());
+			
+			contestantId = atoi(in1.c_str());
+			
+			if(heap.nodeExists(contestantId)){	
+				int pos = 1;
+				int temp;
+				for(auto i : heap.arr){
+					if(i.id == contestantId)
+						temp = pos;
+					pos++;
+				}
+				output << "Contestant <" << contestantId << "> stored in extended heap location <" << temp << ">." << endl;
+			}else
+				output << "There is no Contestant <" << contestantId << "> in the extnded heap: handle[<" << contestantId << ">] = -1." << endl;
 		}
 		else if(!(command.compare("crownWinner"))){
-
+			output << command << endl;
+			Node winner;
+			int maxScore = heap.arr.at(0).points;
+			for(auto i = heap.arr.begin(); i != heap.arr.end(); i++){
+				if((*i).points >= maxScore){
+					winner = (*i);
+					maxScore = (*i).points;
+				}
+			}
+			heap.arr.clear();
+			heap.arr.push_back(winner);
+			output << "Contestant <" << heap.arr.front().id << "> wins with score <" << heap.arr.front().points << ">!" << endl;
 		}
 		else{
 			cout << "Not a valid command." << endl;
 		}
 	}
 	input.close();
+	output.close();
 	return 0;
 }
