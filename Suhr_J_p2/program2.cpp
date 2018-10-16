@@ -50,6 +50,7 @@ bool Heap::isLeaf(int i){
 }
 
 void Heap::siftdown(int i){
+/*
 	if((i < 0) || (i >= arr.size()))
 		return;
 	while(!isLeaf(i)){
@@ -70,7 +71,7 @@ void Heap::siftdown(int i){
 			i = right;
 		}
 	}
-
+*/
 /*
 	while(!isLeaf(i)){
 		int swapNode = ((2*i)+1);
@@ -82,14 +83,25 @@ void Heap::siftdown(int i){
 		i = swapNode;
 	}
 */
+
+	int l = (2*i)+1;
+	int r = (2*i)+2;
+	int smallest = i;
+	if(l < arr.size() && arr.at(l).points < arr.at(i).points)
+		smallest = l;
+	if(r < arr.size() && arr.at(r).points < arr.at(i).points)
+		smallest = r;
+	if(smallest != i){
+		iter_swap(arr.begin()+i, arr.begin()+smallest);
+		siftdown(smallest);
+	}
+
 }
 
 void Heap::heapify(){
-
 	for(int i = (arr.size()-2)/2; i >= 0; i--){
 		siftdown(i);
 	}
-
 }
 
 void Heap::addNode(Node newNode){
@@ -316,6 +328,7 @@ int main(int argc, char** argv){
 		else{
 			cout << "Not a valid command." << endl;
 		}
+		heap.heapify();
 	}
 	input.close();
 	output.close();
