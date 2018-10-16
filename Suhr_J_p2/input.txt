@@ -3,8 +3,9 @@ insertContestant <1> <0>
 insertContestant <2> <15>
 insertContestant <3> <80>
 insertContestant <4> <20>
+insertContestant <4> <10>
 showContestants
-findContestant <5>
+findContestant <2>
 showLocation <3>
 eliminateWeakest
 losePoints <3> <40>

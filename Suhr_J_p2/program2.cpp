@@ -75,7 +75,7 @@ void Heap::siftdown(int i){
 /*
 	while(!isLeaf(i)){
 		int swapNode = ((2*i)+1);
-		if((swapNode+1 < arr.size()-1) && (arr.at(swapNode).points > arr.at(swapNode+1).points))
+		if((swapNode+1 < arr.size()) && (arr.at(swapNode).points > arr.at(swapNode+1).points))
 			swapNode++;
 		if(arr.at(i).points > arr.at(swapNode).points)
 			return;
@@ -87,6 +87,10 @@ void Heap::siftdown(int i){
 	int l = (2*i)+1;
 	int r = (2*i)+2;
 	int smallest = i;
+	if(l < arr.size() && r < arr.size()){
+		if(arr.at(l).points > arr.at(r).points)
+			iter_swap(arr.begin()+l, arr.begin()+r);
+	}
 	if(l < arr.size() && arr.at(l).points < arr.at(i).points)
 		smallest = l;
 	if(r < arr.size() && arr.at(r).points < arr.at(i).points)
@@ -117,7 +121,7 @@ Node Heap::removeHead(){
 }
 
 bool Heap::empty(){
-	if(size == 0)
+	if(arr.size() == 0)
 		return true;
 	return false;
 }
