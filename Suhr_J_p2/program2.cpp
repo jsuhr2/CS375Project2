@@ -36,7 +36,7 @@ class Heap{
 		int size;
 		void crownWinner();
 		bool nodeExists(int);
-		void print();
+		void print(char*);
 		bool isLeaf(int);
 };
 
@@ -134,9 +134,9 @@ bool Heap::nodeExists(int i){
 	return false;
 }
 
-void Heap::print(){
+void Heap::print(char* ar){
 	ofstream output;
-	output.open("output.txt", ios_base::app);
+	output.open(ar, ios_base::app);
 	int pos = 1;
 	for(auto i : arr){
 		output << "Contestant <" << i.id << "> in the extended heap location <" << pos << "> with score <" << i.points << ">." << endl;
@@ -157,13 +157,13 @@ int main(int argc, char** argv){
 	Heap heap;
 	
 	ofstream clear;
-	clear.open("output.txt", ofstream::out | ofstream::trunc);
+	clear.open(argv[2], ofstream::out | ofstream::trunc);
 	clear.close();
 
 	ifstream input(argv[1], ios::in);
 	
 	ofstream output;
-	output.open("output.txt", ios_base::app);
+	output.open(argv[2], ios_base::app);
 
 	input >> size;
 
@@ -275,7 +275,7 @@ int main(int argc, char** argv){
 		}
 		else if(!(command.compare("showContestants"))){
 			output << command << endl;
-			heap.print();
+			heap.print(argv[2]);
 		}
 		else if(!(command.compare("showHandles"))){
 			output << command << endl;

@@ -10,7 +10,7 @@ $(P): $(P).o
 	g++ $(CFLAGS) $(P).o -o submission
 
 run: all
-	./submission input.txt output.txt
+	./submission input.txt output2.txt
 
 clean:
 	rm $(P).o
